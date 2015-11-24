@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+
+
+  <meta charset="utf-8" />
+
+
+  {% include 'google-fonts' %}
+
+
+  <!-- Basic Page Needs
+================================================== -->
+
+  <title>
+    {% if template == 'index' %}{% if page_title contains 'Welcome' %}{{ shop.name }} &ndash; Welcome{% else %}{{ page_title }}{% endif %}{% elsif template == '404' %}Page Not Found{% elsif page_title contains shop.name %}{{ page_title }}{% else %}{{ page_title }} &ndash; {{ shop.name }}{% endif %}
+  </title>
+  {% if page_description %}
+  <meta name="description" content="{{ page_description }}" />
+  {% endif %}
+  <link rel="canonical" href="{{ canonical_url }}" />
+
+
+  <!-- CSS
+================================================== -->
+
+  {{ 'stylesheet.css' | asset_url | stylesheet_tag }}
+  {{ 'custom.css' | asset_url | stylesheet_tag }}
+  {{ 'jquery.fs.selecter.css' | asset_url | stylesheet_tag }}
+  {{ 'font-awesome.css' | asset_url | stylesheet_tag }}
+  {{ 'queries.css' | asset_url | stylesheet_tag }}
+  {{ 'jquery.fancybox.css' | asset_url | stylesheet_tag }}
+
+  <!--[if IE 8 ]>{{ 'ie8.css' | asset_url | stylesheet_tag }}<![endif]-->
+
+  <!--[if IE 7]>
+{{ 'font-awesome-ie7.css' | asset_url | stylesheet_tag }}
+<![endif]-->
+
+  <!-- JS
+================================================== -->
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  {{ 'theme.js' | asset_url | script_tag }} 
+  {{ 'option_selection.js' | shopify_asset_url | script_tag }}  
+  {{ 'jquery.fs.selecter.min.js' | asset_url | script_tag }}  
+
+  {% if template == 'index' %}
+  {% if settings.slideshow == 'backstretch' %}
+  {{ 'jquery.backstretch.min.js' | asset_url | script_tag }}
+  {% endif %}
+  {% endif %}
+
+  {% if template contains 'product' %}
+  {{ 'jquery.bxslider.min.js' | asset_url | script_tag }}
+  {% endif %}
+
+  {{ 'instafeed.js' | asset_url | script_tag }}
+
+
+  <!--[if lt IE 9]>
+<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Favicons
+================================================== -->
+
+  <link rel="shortcut icon" href="{{ 'favicon.png' | asset_url }}">
+
+  {% if template contains 'customers' %}
+  {{ "shopify_common.js" | shopify_asset_url | script_tag }}
+  {{ "customer_area.js"  | shopify_asset_url | script_tag }}
+  {% endif %}
+
+  {{ content_for_header }}
+
+
+
+  <link rel="next" href="/next"/>
+  <link rel="prev" href="/prev"/>
+
+
+
+  <script type="text/javascript">
+
+    $(window).load(function() {  
+      $('.ci').matchHeight();
+
+    });
+  </script>  
+
+
+</head>
+
+
+<body class="gridlock shifter {{ template }}">
+  <div class="shifter-page">  
+    
+    
+   <div class="page-wrap">
+
+    <header class="scrollheader">
+      {% if settings.enable_banner %}
+      <div class="bannertop gridlock-fluid">
+        <div class="row">
+          <div class="desktop-12 tablet-6 mobile-3">
+            {{ settings.banner_message }}
+          </div>
+        </div>
+      </div> 
+      {% endif %}   
+      <div id="navigation" class="gridlock-fluid">
+        <div class="row">
+          <div class="nav-container desktop-9 tablet-4 mobile-3">
+            <div id="logo" class="mobile-3">       
+              {% if settings.use_logo_image %}
+              <a href="/"><img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" style="border: 0;"/></a>
+              {% else %}
+              <a href="/">{{ shop.name }}</a>
+              {% endif %}     
+            </div> 
+
+            {% include 'mobile-cart' %}
+
+
+            <nav>
+              <ul id="main-nav" role="navigation"> 
+                {% for link in linklists.main-menu.links %}
+                {% include 'navigation' %}
+                {% endfor %}
+              </ul>        
+            </nav>
+          </div>
+
+          <ul id="cart" class="desktop-3 tablet-2 mobile-hide">                  
+            <li class="seeks"><a id="inline" href="#search_popup" class="open_popup"><i class="icon-search"></i></a>
+              {% if settings.show_multiple_currencies %}{% include 'currencies-switcher' %}{% endif %}</li>
+            {% if shop.customer_accounts_enabled %}
+            <li class="cust">
+              {% if customer  %}
+              <a href="/account">{{ 'customer.account.title' | t }}</a>
+              {% else %}
+              <a href="/account/login">{{ 'customer.account.title' | t }}</a>
+              {% endif %}
+            </li>
+            {% endif %}
+            <li><a href="/cart"><span class="cart-words">{{ 'cart.general.title' | t }}</span>&nbsp;<i class="icon-shopping-cart"></i> <span class="item_count">{{ cart.item_count }}</span></a>       
+          </ul>       
+
+        </div>  
+      </div>
+    </header>
+
+    <div class="clear"></div>
+
+
+    {% if template != 'index' %}
+    <div id="content" class="row">	
+      {% if template != 'index' %}
+      {% if settings.breadcrumb %}
+      {% include 'breadcrumb' %}	
+      {% endif %}	
+      {% endif %}
+      {{ content_for_layout }}  
+    </div>
+    {% else %}
+    {{ content_for_layout }}
+    {% endif %}
+
+
+
+    </div>
+    
+    <footer>
+      <div id="footer-wrapper">	
+        <div id="footer" class="row">
+
+          {% assign grid = 0 %}
+          {% assign grid = grid | plus: 1 %}
+          {% if settings.footer-2-links != '' %}{% assign grid = grid | plus: 1 %}{% endif %}
+          {% if settings.footer-3-links != '' %}{% assign grid = grid | plus: 1 %}{% endif %} 
+          {% assign grid = grid | plus: 1 %}        
+          {% if grid > 0 %}
+          <div class="desktop-{{ 12 | divided_by: grid }} tablet-half mobile-half">
+            <h4>{{ 'layout.footer.navigation' | t }}</h4>
+            <ul>
+              {% for link in linklists.footer.links %}
+              <li>{{ link.title | link_to: link.url }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          {% if settings.footer-2-links != '' %}
+          <div class="desktop-{{ 12 | divided_by: grid }} tablet-half mobile-half">
+            {% if settings.footer-2-links != '' %}
+            <h4>{{ linklists[settings.footer-2-links].title }}</h4>
+            {% endif %}
+            <ul>
+              {% for link in linklists[settings.footer-2-links].links %}
+              <li>{{ link.title | link_to: link.url }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+          {% if settings.footer-3-links != '' %}
+          <div class="desktop-{{ 12 | divided_by: grid }} tablet-half mobile-half">
+            {% if settings.footer-3-links != '' %}        
+            <h4>{{ linklists[settings.footer-3-links].title }}</h4>
+            {% endif %}
+            <ul>
+              {% for link in linklists[settings.footer-3-links].links %}
+              <li>{{ link.title | link_to: link.url }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+          <div class="desktop-{{ 12 | divided_by: grid }} tablet-half mobile-3">
+            <h4>{{ 'layout.footer.connect' | t }}</h4>
+            <div id="footer_signup">
+              <p>{{ settings.footer_signup_text }}</p>
+              <form action="{{ settings.mailchimp }}" method="post" id="footer-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                <input value="" name="EMAIL" class="email" id="footer-EMAIL" placeholder="{{ 'general.newsletter_form.newsletter_email' | t }}" required="" type="email">
+                <input value="{{ 'general.newsletter_form.submit' | t }}" name="subscribe" id="footer-subscribe" class="button" type="submit">
+              </form>
+            </div> 
+          </div>      
+          {% endif %}
+          <div class="clear"></div>
+
+          <ul id="footer-icons" class="desktop-12 tablet-6 mobile-3">
+            {% if settings.show_facebook %}<li><a href="{{ settings.facebook_url }}" target="_blank"><i class="icon-facebook icon-2x"></i></a></li>{% endif %}
+            {% if settings.show_twitter %}<li><a href="//www.twitter.com/{{ settings.twittername }}" target="_blank"><i class="icon-twitter icon-2x"></i></a></li>{% endif %}
+            {% if settings.show_pinterest %}<li><a href="{{ settings.pinterest_url }}" target="_blank"><i class="icon-pinterest icon-2x"></i></a></li>{% endif %}
+            {% if settings.show_tumblr %}<li><a href="{{ settings.tumblr_url }}" target="_blank"><i class="icon-tumblr icon-2x"></i></a></li>{% endif %}
+            {% if settings.show_youtube %}<li><a href="{{ settings.youtube_url }}" target="_blank"><i class="icon-youtube icon-2x"></i></a></li>{% endif %}
+            {% if settings.show_googleplus %}<li><a href="{{ settings.googleplus_url }}" target="_blank"><i class="icon-google-plus icon-2x"></i></a></li>{% endif %}
+            {% if settings.show_instagram %}<li><a href="//instagram.com/{{ settings.instagram-id }}" target="_blank"><i class="icon-instagram icon-2x"></i></a></li>{% endif %}
+            {% if settings.show_rss %}<li><a href="{{ shop.url }}/blogs/news.atom" target="_blank"><i class="icon-rss icon-2x"></i></a></li>{% endif %}
+          </ul>      
+
+          <div class="clear"></div>
+
+          <div class="credit desktop-12 tablet-6 mobile-3">
+            <p>
+              {{ 'layout.footer.copyright' | t }} &copy; {{ 'now' | date: "%Y" }} Amour Vert | All rights reserved.
+              
+              
+            </p>
+          </div>
+        </div> 
+      </div>
+    </footer>
+
+
+  {% include 'popup' %}
+
+  <div style='display:none'>
+    <div id='search_popup' style='padding:30px;'>
+      <p class="box-title">SEARCH THIS STORE<p>
+      <!-- BEGIN #subs-container -->
+      <div id="subs-container" class="clearfix">
+        <div id="search">
+          <form action="/search" method="get">
+            <input type="text" name="q" id="q" placeholder="{{ 'general.search.placeholder' | t }}" />
+          </form>
+        </div>  
+      </div>
+    </div>
+  </div>    
+  </div>  
+
+<nav class="shifter-navigation">
+  {% for link in linklists.main-menu.links %}
+  <li>{{ link.title | link_to: link.url }}
+    {% capture child_list_handle %}{{ link.title | handleize }}{% endcapture %}
+    {% if linklists[child_list_handle] and linklists[child_list_handle].links.size > 0 %}
+    <ul class="sub">
+      {% for l in linklists[child_list_handle].links %}
+      <li><a href="{{ l.url }}">{{ l.title }}</a></li>          
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </li>
+  {% endfor %}
+</nav>
+
+
+<a href="#" class="scrollup"><i class="icon-angle-up icon-2x"></i> TOP</a>
+
+
+<!-- Begin Recently Viewed Products -->
+<script type="text/javascript" charset="utf-8">
+  //<![CDATA[
+
+  // Including api.jquery.js conditionnally.
+  if (typeof Shopify.resizeImage === 'undefined') {
+    document.write({{ "api.jquery.js" | shopify_asset_url | script_tag | json }});
+  }
+
+  //]]>
+</script>
+
+{{ '//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js' | script_tag }}
+{{ 'jquery.products.min.js' | asset_url | script_tag }}
+
+{% if template contains 'product' %}
+
+<script type="text/javascript" charset="utf-8">
+  //<![CDATA[
+
+  Shopify.Products.recordRecentlyViewed();
+
+  //]]>
+
+
+
+</script>
+{% endif %}  
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=127142210767229";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+{% include 'ajaxify-cart' %}
+{% include 'currencies' %}
+  <script type="text/javascript" src="//use.typekit.net/ik/vuTs7TuUWlYUpWA72fgJMzS4NsQvZZ72empU865ZvOJfe7J2fFHN4UJLFRbh52jhWD9uw2ByZAmRZQsKw2j3ZcbDZAj35QqtFyTQiaiaOcBldamkicmkifoRdhXCjAuziW4hZW4XOcFzdPUCdhFydeyzSabCjWjkO1FUiABkZWF3jAF8OcFzdP37OcBhwKoDSWmyScmDSeBRZPoRdhXK2YgkdayTdAIldcNhjPJ4Z1mXiW4yOWgXH6qJ73IbMg6gJMJ7fbKCMsMMeMC6MKG4f5J7IMMjMkMfH6qJtkGbMg6FJMJ7fbKzMsMMeMb6MKG4fOMgIMMj2KMfH6qJnbIbMg6eJMJ7fbK0MsMMegM6MKG4fJCgIMMjgkMfH6qJRMIbMg6sJMJ7fbKTMsMMeM66MKG4fHGgIMMjIKMfH6qJKbIbMg64JMJ7fbKHMsMMegw6MKG4fJZmIMIjMkMfH6qJ6u9bMs6FJMJ7fbKImsMgeMb6MKG4fJmmIMIj2KMfH6qJxubbMs6BJMJ7fbKMmsMgeMv6MKG4fJBmIMIjgkMfH6qJ689bMs6sJMJ7fbKYmsMgeM66MKG4fJymIMIjIKMfqMeXTHp3gb.js"></script>
+<link rel="stylesheet" href="https://use.typekit.net/c/c45028/1w;futura-pt,2,SH7:W:i3,SH9:W:i4,SH4:W:i5,SH6:W:i7,SHD:W:i8,SHB:W:n3,Y5K:W:n4,SH3:W:n5,SH5:W:n7,SHC:W:n8;proxima-nova,2,gbh:W:i1,gbk:W:i3,gbm:W:i4,gbr:W:i6,gbt:W:i7,gbw:W:i8,gby:W:i9,gbg:W:n1,gbj:W:n3,gbl:W:n4,gbq:W:n6,gbs:W:n7,gbv:W:n8,gbx:W:n9/l?3bb2a6e53c9684ffdc9a9bf5195b2a620ddcd3046f58c4dc1101076440738b46c791d2f5f701eed4b7c22acb1d3d74b10e006c8eb67cbd83d2da09bb198d024f992651a3dac201280f4d0327f7493ebe84dce1afa88adf82c66436e9b62e6a0b1ac476fd9d4cd8b3bb50ea292c543d9ba31dfaaa32de5b0d89f6700f84a353ad810b72cd48" media="all">
+
+</body>
+</html>

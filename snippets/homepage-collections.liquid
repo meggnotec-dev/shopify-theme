@@ -1,0 +1,21 @@
+<section id="homepage-collections" class="no-fouc mobile-hide">  
+  {% if settings.home-collection-linklist == '' %}
+  <div class="row">
+  <div class="desktop-12">
+    <p>You are seeing this message as you have yet to choose a link-list containing collections to display on your homepage.</p>
+    <p>Open your <strong><a href="/admin/themes/10904475/settings">theme settings</a></strong> and expand the Home Page area</p>
+    <p>In the area marked Homepage Collections choose a link-list containing collections from the dropdown</p>
+  </div>
+  </div>
+  {% endif %}
+  {% for link in linklists[settings.home-collection-linklist].links %}
+  {% assign collection = link.object %}  
+  <div class="section-title row">
+    <h3 class="desktop-12 tablet-6 mobile-3"><a href="{{ collection.url }}" title="{{ collection_title }}">{{ collection.title }}</a></h3>
+  </div>  
+  <article id="collection-loop" class="row">
+    {% include 'homepage-collections-loop' %}
+  </article> 
+  {% endfor %}
+</section>
+<div class="clear"></div>

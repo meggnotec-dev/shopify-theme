@@ -1,0 +1,21 @@
+  <section id="homepage-products" data-type="background" data-speed="5">    
+    <div class="section-title row">
+      <h2 class="desktop-12 tablet-6 mobile-3">{{ 'layout.homepage.featured_products_title' | t }}</h2>
+    </div>
+    <div class="row">    
+      <article id="product-loop">
+        {% if settings.homepage-collection == '' %}
+        <div class="desktop-12">
+          <p>You are seeing this message as you have yet to choose a collection to display on your homepage.</p>
+          <p>Open your <strong><a href="/admin/themes/10904475/settings">theme settings</a></strong> and expand the  Home Page area</p>
+          <p>In the area marked Homepage Products choose a collection from the dropdown</p>
+        </div>
+        {% else %}
+        {% for product in collections[settings.homepage-collection].products limit: settings.homepage-product-limit %}  
+        {% include 'product-listing' %}
+        {% endfor %}
+        {% endif %}
+      </article> 
+    </div>
+  </section>
+  <div class="clear"></div>

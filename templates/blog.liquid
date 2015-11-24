@@ -1,0 +1,106 @@
+<div class="section-title">
+  <h1 class="desktop-12 mobile-3">{% if current_tags %}{{ blog.title | link_to: blog.url }} &raquo; {{ current_tags.first }}{% else %}{{ blog.title }}{% endif %}<a class="fr" target="_blank" href="{{ shop.url }}/blogs/{{ blog.handle }}.atom"><i class="icon-rss icon-2x"></i></a></h1>
+</div>
+
+  {% paginate blog.articles by 50 %}
+  
+
+  <div id="blog-sidebar" class="desktop-3 mobile-3">
+   
+    <h4>{{ 'blogs.sidebar.recent_posts' | t }}</h4>
+    <ul id="blog-recent">
+      {% for article in blog.articles %}
+      <li>{{ article.title | link_to: article.url }}</li>
+      {% endfor %}
+    </ul>
+    
+    <h4>{{ 'blogs.sidebar.tags' | t }}</h4>
+    <ul id="blog-tags">
+      {% for tag in blog.tags %}
+      <li><a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a></li>
+      {% endfor %}
+    </ul>    
+    
+    <h4>{{ 'blogs.sidebar.social_title' | t }}</h4>
+    <ul id="social-icons">
+      {% if settings.show_facebook %}<li><a href="{{ settings.facebook_url }}" target="_blank"><i class="icon-facebook icon-2x"></i></a></li>{% endif %}
+      {% if settings.show_twitter %}<li><a href="//www.twitter.com/{{ settings.twittername }}" target="_blank"><i class="icon-twitter icon-2x"></i></a></li>{% endif %}
+      {% if settings.show_pinterest %}<li><a href="{{ settings.pinterest_url }}" target="_blank"><i class="icon-pinterest icon-2x"></i></a></li>{% endif %}
+      {% if settings.show_tumblr %}<li><a href="{{ settings.tumblr_url }}" target="_blank"><i class="icon-tumblr icon-2x"></i></a></li>{% endif %}
+      {% if settings.show_youtube %}<li><a href="{{ settings.youtube_url }}" target="_blank"><i class="icon-youtube icon-2x"></i></a></li>{% endif %}
+      {% if settings.show_googleplus %}<li><a href="{{ settings.googleplus_url }}" target="_blank"><i class="icon-google-plus icon-2x"></i></a></li>{% endif %}
+      {% if settings.show_instagram %}<li><a href="//instagram.com/{{ settings.instagram-id }}" target="_blank"><i class="icon-instagram icon-2x"></i></a></li>{% endif %}
+    </ul>
+    
+    
+
+    {% if settings.show-twitter-feed %}    
+    <div id="twitter-card">
+      <h4><a href="//www.twitter.com/{{ settings.twittername }}" target="_blank">@{{ settings.twittername }}</a> {{ 'blogs.sidebar.twitter_title' | t }}</h4>
+      <a class="twitter-timeline" href="//twitter.com/{{ settings.twittername }}" data-widget-id="{{ settings.twitter-widget }}" data-chrome="noborders noheader transparent" data-tweet-limit="3">Recent Tweets</a>
+      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>     
+    </div>  
+    {% endif %}
+    
+    {% if settings.show-facebook-like %}        
+    <div id="facebook-card">
+      <h4>{{ 'blogs.sidebar.facebook_title' | t }}</h4>
+      <div class="fb-like-box" data-href="{{ settings.facebook_url }}" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="false" data-show-border="false"></div> 
+    </div>
+    {% endif %}
+    
+  </div>
+
+
+
+  <ul id="blog-articles" class="desktop-9 mobile-3">
+    {% for article in blog.articles  %}
+    <li class="single-article">
+      
+      <div class="article-body desktop-12">
+        <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
+        {% assign published_at = article.published_at | date: "%d %B %Y" %}
+        <p class="posted">{{ 'blogs.article.posted_on_date_html' | t: date: published_at }}</p>
+        
+        {% if article.comments_count > 0 %}
+        <p class="posted">{{ article.comments_count }} {{ 'blogs.article.comments' | t }}</p>
+        {% endif %} 
+        
+        <div class="article-content">
+          {% if article.excerpt == blank %}
+          {{ article.content | strip_html | truncatewords: 30 }}
+          {% else %}
+          {{ article.excerpt }}
+          {% endif %}
+        </div>        
+        
+        {% if article.tags.size > 0 %}
+        <p class="post-tags">{{ 'blogs.article.tags' | t }}:
+          {% for tag in article.tags %} 
+          <a href="{{ blog.url }}/tagged/{{ tag | handle }}">
+            {{ tag }}, 
+          </a>
+          {% endfor %}
+        </p>
+        {% endif %}        
+        
+        <div class="readmore">
+          <a href="{{ article.url }}">{{ 'blogs.article.read_more' | t }}</a>
+        </div>
+        {% include 'social' with article %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul> 
+  
+  <div class="clear"></div>
+  
+  
+	{% include 'pagination' %}
+
+  
+  {% endpaginate %}
+  
+
+
+
